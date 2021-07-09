@@ -1,0 +1,67 @@
+
+def bound1(n,k):
+    a= k*(floor((n-k-1)/k)+1)
+    m=min(k-1,n-k-1)
+    b=0
+    for d in range(1,(m+1)):
+            for r in range(2,(d+2)):
+                    c=(k-d)*binomial(d-1,r-2)*(floor((n-k-d-1)/(k-r+1))+1)
+                    b=b+c
+    if a+b> binomial(n,k):
+        return "error:bound 1 is larger than n choose k"
+    else:
+        return a+b
+    
+def bound2(n,k):
+    a= ceil((k-3)/4)
+    b= (floor(k/2)+2)/3 
+    c= floor(log(b,2))
+    m=(a+c)*n
+    if m> binomial(n,k):
+        return m,"error:bound 2 is larger than n choose k"
+    else:
+        return m  
+    
+def bound3(n,k):
+    a= k*(floor((n-k-1)/k)+1)
+    b= (floor(k/2)+2)/3 
+    c= floor(log(b,2))
+    m=c*n+a
+    if m> binomial(n,k):
+        return m,"error:bound 3 is larger than n choose k"
+    else:
+        return m  
+    
+def bounds(n):
+    B1=[]
+    B2=[]
+    B3=[]
+    B4=[]
+    ks=[]
+    for k in range(2,n-1):
+        if gcd(n,k)==1:
+            ks.append(k)
+            b1=bound1(n,k);  b2=bound2(n,k);  b3=bound3(n,k)
+            B1.append(b1)
+            B2.append(b2)
+            B3.append(b3)
+            b11 = ceil(b1/n)*n
+            b22 = ceil(b2/n)*n
+            b33= ceil(b3/n)*n
+            b4=  max(b11, b22, b33)
+            B4.append(b4)
+      #  print(b, index) # prints the maximum bound and the index (i.e. the 1st, 2nd or 3rd)
+    return [ks,B1,B2,B3, B4] # lists of all bounds varying over all values of k
+
+def plot_bounds(n):
+    [x, B1,B2,B3, B4]=bounds(n)
+    txt = "n="+ str(n)+ ", all"
+    neutral,= plt.plot(x,[n]*(len(x)),color = "black", marker = "o", linestyle= "-", linewidth =3)
+    bound11,= plt.plot(x,B1,color = "b", marker = "o", linestyle= "-", linewidth = 3)
+    bound22,= plt.plot(x,B2, color = "g", marker = "o", linestyle= "-", linewidth = 3)
+    bound33,= plt.plot(x,B3, color = "violet", marker = "o", linestyle= "-", linewidth = 3)
+    bound44,= plt.plot(x,B4, color = "r", marker = "o", linestyle= "-", linewidth = 3)
+    plt.legend([neutral, bound11, bound22, bound33, bound44],["n", "m1","m2", "m3", "m4"], loc='upper left', bbox_to_anchor=(0.75, 1))
+    #plt.show()
+    plt.savefig(txt)
+    plt.show()
